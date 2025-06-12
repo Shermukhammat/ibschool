@@ -1,0 +1,384 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== REMIXICONS ===============-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+    <!--=============== CSS ===============-->
+    <style> 
+        /*=============== GOOGLE FONTS ===============*/
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+        /*=============== VARIABLES CSS ===============*/
+        :root {
+            /*========== Colors ==========*/
+            /*Color mode HSL(hue, saturation, lightness)*/
+            --white-color: hsl(0, 0%, 100%);
+            --black-color: hsl(0, 0%, 0%);
+            --error-color: hsl(0, 70%, 60%);
+            --success-color: hsl(120, 50%, 60%);
+
+            /*========== Font and typography ==========*/
+            /*.5rem = 8px | 1rem = 16px ...*/
+            --body-font: "Poppins", sans-serif;
+            --h1-font-size: 2rem;
+            --normal-font-size: 1rem;
+            --small-font-size: .813rem;
+        }
+
+        /*=============== BASE ===============*/
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body,
+        input,
+        button {
+            font-family: var(--body-font);
+            font-size: var(--normal-font-size);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /*=============== LOGIN ===============*/
+        .login {
+            position: relative;
+            height: 100vh;
+            display: grid;
+            align-items: center;
+        }
+
+        .login__bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .login__form {
+            position: relative;
+            margin-inline: 1.5rem;
+            background-color: hsla(0, 0%, 100%, .01);
+            border: 2px solid hsla(0, 0%, 100%, .7);
+            padding: 2.5rem 1rem;
+            color: var(--white-color);
+            border-radius: 1rem;
+            backdrop-filter: blur(16px);
+        }
+
+        .login__title {
+            text-align: center;
+            font-size: var(--h1-font-size);
+            margin-bottom: 1.25rem;
+        }
+
+        .login__inputs, 
+        .login__box {
+            display: grid;
+        }
+
+        .login__inputs {
+            row-gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .login__box {
+            grid-template-columns: 1fr max-content;
+            column-gap: .75rem;
+            align-items: center;
+            border: 2px solid hsla(0, 0%, 100%, .7);
+            padding-inline: 1.25rem;
+            border-radius: 4rem;
+        }
+
+        .login__box.error {
+            border-color: var(--error-color);
+        }
+
+        .login__input, 
+        .login__button {
+            border: none;
+            outline: none;
+        }
+
+        .login__input {
+            width: 100%;
+            background: none;
+            color: var(--white-color);
+            padding-block: 1rem;
+        }
+
+        .login__input::placeholder {
+            color: var(--white-color);
+        }
+
+        .login__box i {
+            font-size: 1.25rem;
+        }
+
+        .login__check, 
+        .login__check-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .login__check {
+            margin-bottom: 1rem;
+            font-size: var(--small-font-size);
+        }
+
+        .login__check-box {
+            column-gap: .5rem;
+        }
+
+        .login__check-input {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--white-color);
+        }
+
+        .login__forgot {
+            color: var(--white-color);
+        }
+
+        .login__forgot:hover {
+            text-decoration: underline;
+        }
+
+        .login__button {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--white-color);
+            border-radius: 4rem;
+            color: var(--black-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login__button:hover {
+            background-color: hsla(0, 0%, 90%, 1);
+        }
+
+        .login__button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login__register {
+            font-size: var(--small-font-size);
+            text-align: center;
+        }
+
+        .login__register a {
+            color: var(--white-color);
+            font-weight: 500;
+        }
+
+        .login__register a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home a {
+            color: var(--white-color);
+            font-weight: 500;
+            font-size: var(--small-font-size);
+        }
+
+        /*=============== ERROR MESSAGES ===============*/
+        .messages {
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: var(--small-font-size);
+        }
+
+        .message.error {
+            background-color: hsla(0, 70%, 60%, 0.2);
+            border: 1px solid var(--error-color);
+            color: var(--white-color);
+        }
+
+        .message.success {
+            background-color: hsla(120, 50%, 60%, 0.2);
+            border: 1px solid var(--success-color);
+            color: var(--white-color);
+        }
+
+        .message.info {
+            background-color: hsla(210, 50%, 60%, 0.2);
+            border: 1px solid hsl(210, 50%, 60%);
+            color: var(--white-color);
+        }
+
+        .field-errors {
+            margin-top: 0.25rem;
+            font-size: var(--small-font-size);
+            color: var(--error-color);
+        }
+
+        .non-field-errors {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background-color: hsla(0, 70%, 60%, 0.2);
+            border: 1px solid var(--error-color);
+            border-radius: 0.5rem;
+            color: var(--white-color);
+            font-size: var(--small-font-size);
+        }
+
+        /*=============== BREAKPOINTS ===============*/
+        /* For medium devices */
+        @media screen and (min-width: 576px) {
+            .login {
+                justify-content: center;
+            }
+            .login__form {
+                width: 420px;
+                padding-inline: 2.5rem;
+            }
+            .login__title {
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+
+    <title>Krish - IBSchool.uz</title>
+</head>
+<body>
+    <div class="login">
+        <img src="{% static 'login-bg.png' %}" alt="background image" class="login__bg">
+
+        <form method="post" class="login__form" novalidate>
+            <h1 class="login__title">
+                <a href="/" style="color:white">IBSchoolga</a> krish
+            </h1>
+
+            <!-- Django Messages  -- >
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Non-field errors (general form errors) -->
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- CSRF Token -->
+            {% csrf_token %}
+
+            <div class="login__inputs">
+                <!-- Username Field -->
+                <div class="login__box {% if form.username.errors %}error{% endif %}">
+                    {{ form.username }}
+                    <i class="ri-user-fill"></i>
+                </div>
+                {% if form.username.errors %}
+                    <div class="field-errors">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+
+                <!-- Password Field -->
+                <div class="login__box {% if form.password.errors %}error{% endif %}">
+                    {{ form.password }}
+                    <i class="ri-lock-2-fill"></i>
+                </div>
+                {% if form.password.errors %}
+                    <div class="field-errors">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Remember me checkbox (optional) -->
+            <div class="login__check">
+                <div class="login__check-box">
+                    <input type="checkbox" name="remember_me" class="login__check-input" id="remember">
+                    <label for="remember">Meni eslab qol</label>
+                </div>
+                
+            </div>
+
+            <button type="submit" class="login__button">Krish</button>
+
+            <div class="login__register">
+                Xisobingiz yoqmi? <a href="mailto:support@ibschool.uz">Bog'lanish</a>
+            </div>
+
+            <br>
+            <div class="login__register">
+                <a href="/"> ⬅️ Bosh sahifaga qaytish</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Add some basic client-side validation and UX improvements
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.login__form');
+            const button = document.querySelector('.login__button');
+            const inputs = document.querySelectorAll('.login__input');
+
+            // Add placeholder attributes to form fields
+            const usernameField = document.querySelector('input[name="username"]');
+            const passwordField = document.querySelector('input[name="password"]');
+            
+            if (usernameField) {
+                usernameField.setAttribute('placeholder', 'Foydalanuvchi nomi');
+                usernameField.setAttribute('required', '');
+            }
+            
+            if (passwordField) {
+                passwordField.setAttribute('placeholder', 'Parol');
+                passwordField.setAttribute('required', '');
+            }
+
+            // Form submission handling
+            form.addEventListener('submit', function() {
+                button.disabled = true;
+                button.textContent = 'Kuting...';
+            });
+
+            // Remove error styling when user starts typing
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    const box = this.closest('.login__box');
+                    if (box.classList.contains('error')) {
+                        box.classList.remove('error');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

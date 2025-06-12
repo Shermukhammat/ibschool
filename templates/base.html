@@ -1,0 +1,512 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Here will be title{% endblock %}</title>
+    {% block head_block%} {% endblock %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+        scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #fff;
+            border-bottom: 1px solid #e9e9e9;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        nav img {
+            max-height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            margin-right: 1.5rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #000;
+            background-color: #f0f0f0;
+        }
+
+        .nav-links.active {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links.active a {
+            margin: 0.5rem 0;
+        }
+
+        /* User Menu Styles */
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-button {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .user-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Avatar as button */
+        .avatar-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9e9e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+            overflow: hidden;
+            border: 2px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .avatar-button:hover {
+            border-color: #ddd;
+            transform: scale(1.05);
+        }
+
+        .avatar-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 240px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            display: none;
+            z-index: 101;
+            margin-top: 0.5rem;
+        }
+
+        .user-menu.active {
+            display: block;
+        }
+
+        .user-info {
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .user-status {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background-color: #fff8e6;
+            color: #cc8800;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Menu Links */
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.5rem;
+            border-radius: 6px;
+            margin: 0.2rem 0;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .menu-links a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .menu-links a svg {
+            margin-right: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Navigation Links Alignment */
+        .mobile-nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+            margin: 0.2rem 0;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .mobile-nav-links a svg {
+            margin-right: 0.8rem;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+
+        /* Buttons */
+        .logout-button {
+            margin-top: 0.5rem;
+            padding: 0.6rem;
+            width: 100%;
+            border: none;
+            background-color: #f1f1f1;
+            color: #666;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #ff3b3b;
+            color: white;
+        }
+
+        .login-button {
+            margin-top: 0.5rem;
+            padding: 0.6rem;
+            width: 100%;
+            border: none;
+            background-color: #212523;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .login-button:hover {
+            background-color: #0ea90e;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav-links {
+            display: none;
+            border-top: 1px solid #e9e9e9;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+        }
+
+        /* Logout Modal */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logout-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .modal-cancel {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .modal-cancel:hover {
+            background-color: #e1e1e1;
+        }
+
+        .modal-confirm {
+            background-color: #ff3b3b;
+            color: white;
+        }
+
+        .modal-confirm:hover {
+            background-color: #e12b2b;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 767px) {
+            .mobile-nav-links {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .nav-links.active {
+                position: static;
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+
+        {% block custom_style %}{% endblock %}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <a href="/"> 
+            <img src="{% static 'logo.png' %}" alt="Logo" /> 
+          </a>
+          <div class="nav-links">
+            <a href="/">Bosh sahifa</a>
+            <a href="/courses">Kurslar</a>
+            <a href="/posts">Maqolalar</a>
+            <a href="/help">Yordam</a>
+          </div>
+          <div class="user-menu-container">
+            <button class="user-button" id="userMenuButton" aria-label="User menu">
+              <div class="avatar-button">
+                {% if user.is_authenticated %}
+                  {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="User" 
+                         onerror="this.onerror=null; this.parentNode.innerHTML='{{ user.full_name|first|upper }}';" />
+                  {% else %}
+                    <img src="{% static 'nofound.jpg' %}" alt="User"
+                         onerror="this.onerror=null; this.parentNode.innerHTML='{{ user.full_name|first|upper }}';" />
+                  {% endif %}
+                {% else %}
+                  <img src="{% static 'nofound.jpg' %}" alt="User" 
+                       onerror="this.onerror=null; this.parentNode.innerHTML='N';" />
+                {% endif %}
+              </div>
+            </button>
+            <div class="user-menu" id="userMenu">
+              <div class="user-info">
+                {% if user.is_authenticated %}
+                  <div class="user-name">{{user.get_full_name}}</div>
+                  {% comment %} <span class="user-status">Bloklangan</span> {% endcomment %}
+                {% else %}
+                  <div class="user-name">Ro'yxatdan o'tishingiz kerak</div>
+                {% endif %}
+              </div>
+              
+              <!-- Mobile navigation links -->
+              <div class="mobile-nav-links">
+                <a href="/">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                  </svg>
+                  Bosh sahifa
+                </a>
+                <a href="/courses">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                  Kurslar
+                </a>
+                <a href="/posts">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                  Maqolalar
+                </a>
+                <a href="/help">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  Yordam
+                </a>
+              </div>
+
+              {% if user.is_authenticated %}
+                <button class="logout-button" id="logoutButton">Chiqish</button>
+              {% else %}
+                <a href="/login">
+                  <button class="login-button" id="loginButton">Kirish</button>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Logout confirmation modal -->
+    <div class="logout-modal" id="logoutModal">
+      <div class="modal-content">
+        <div class="modal-title">Chiqishni tasdiqlash</div>
+        <p>Siz rostdan ham tizimdan chiqmoqchimisiz?</p>
+        <div class="modal-buttons">
+          <button class="modal-cancel" id="cancelLogout">Bekor qilish</button>
+          <button class="modal-confirm" id="confirmLogout">Chiqish</button>
+        </div>
+      </div>
+    </div>
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <script>
+      const userMenuButton = document.getElementById("userMenuButton");
+      const userMenu = document.getElementById("userMenu");
+      const logoutButton = document.getElementById("logoutButton");
+      const logoutModal = document.getElementById("logoutModal");
+      const cancelLogout = document.getElementById("cancelLogout");
+      const confirmLogout = document.getElementById("confirmLogout");
+
+      // User menu toggle
+      if (userMenuButton && userMenu) {
+        userMenuButton.addEventListener("click", (event) => {
+          event.stopPropagation();
+          userMenu.classList.toggle("active");
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener("click", (event) => {
+          if (!userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
+            userMenu.classList.remove("active");
+          }
+        });
+      }
+
+      // Logout confirmation
+      if (logoutButton && logoutModal) {
+        logoutButton.addEventListener("click", () => {
+          logoutModal.classList.add("active");
+          userMenu.classList.remove("active");
+        });
+
+        cancelLogout.addEventListener("click", () => {
+          logoutModal.classList.remove("active");
+        });
+
+        confirmLogout.addEventListener("click", () => {
+          window.location.href = "/logout";
+        });
+
+        logoutModal.addEventListener("click", (event) => {
+          if (event.target === logoutModal) {
+            logoutModal.classList.remove("active");
+          }
+        });
+      }
+    </script>
+    {% block myscript %}{% endblock %}
+  </body>
+</html>
