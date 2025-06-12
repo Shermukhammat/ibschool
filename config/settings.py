@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.180.195']
 INSTALLED_APPS = [
     'main',
     'solo',
+    'courses',
     'django_quill',
     'django.contrib.admin',
     'django.contrib.auth',

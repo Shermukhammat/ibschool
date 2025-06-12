@@ -23,7 +23,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     # path('quill/', include('django_quill.urls')),
     path('admin', admin.site.urls),
-    path('', include('main.urls')),    
+    path('courses', include('courses.urls')),  
+    path('', include('main.urls')),
 ]
 
 if settings.DEBUG:
