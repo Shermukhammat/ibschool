@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+AUTH_USER_MODEL = 'main.MyUser'
 APPEND_SLASH = False
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -27,3 +27,61 @@ class PostAdmin(admin.ModelAdmin):
         elif not change:
             obj.slug = slugify(obj.title)
         super().save_model(request, obj, form, change)
+
+
+
+
+# accounts/admin.py
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from .models import MyUser
+from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+
+class UserCreationForm(forms.ModelForm):
+    """Form for creating new users with password confirmation."""
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    class Meta:
+        model = MyUser
+        fields = ('username',)
+
+    def clean_password2(self):
+        if self.cleaned_data.get("password1") != self.cleaned_data.get("password2"):
+            raise forms.ValidationError("Passwords don't match")
+        return self.cleaned_data["password2"]
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+class UserChangeForm(forms.ModelForm):
+    """Form for updating users. Includes hashed password display."""
+    password = ReadOnlyPasswordHashField()
+    class Meta:
+        model = MyUser
+        fields = ('username', 'password', 'is_active', 'is_staff', 'avatar')
+
+@admin.register(MyUser)
+class CustomUserAdmin(BaseUserAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+
+    list_display = ('username', 'is_staff', 'is_superuser')
+    list_filter = ('is_staff', 'is_superuser')
+    fieldsets = (
+        (None,               {'fields': ('username', 'password', 'avatar', 'first_name', 'last_name')}),
+        ('Permissions',      {'fields': ('is_staff','is_superuser','groups','user_permissions')}),
+        ('Important dates',  {'fields': ('last_login',)}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2'),
+        }),
+    )
+    search_fields = ('username',)
+    ordering = ('username',)
