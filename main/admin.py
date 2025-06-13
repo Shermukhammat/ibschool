@@ -63,17 +63,17 @@ class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
     class Meta:
         model = MyUser
-        fields = ('username', 'password', 'is_active', 'is_staff', 'avatar')
+        fields = ('username', 'password', 'is_active', 'is_staff', 'avatar', 'group')
 
 @admin.register(MyUser)
 class CustomUserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'first_name', 'last_name', 'is_superuser')
-    list_filter = ('is_staff', 'is_superuser')
+    list_display = ('username', 'first_name', 'last_name', 'is_superuser', 'group')
+    list_filter = ('is_staff', 'is_superuser', 'group')
     fieldsets = (
-        (None,               {'fields': ('username', 'password', 'avatar', 'first_name', 'last_name')}),
+        (None,               {'fields': ('username', 'password', 'avatar', 'first_name', 'last_name', 'group')}),
         ('Permissions',      {'fields': ('is_staff','is_superuser','groups','user_permissions')}),
         ('Important dates',  {'fields': ('last_login',)}),
     )

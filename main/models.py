@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from urllib.parse import urlparse, parse_qs
 from django.utils import timezone
 from django.urls import reverse
+from courses.models import Group
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -41,6 +42,15 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     avatar = models.ImageField(blank=True, null=True, upload_to = 'avatars/', verbose_name="Avatar")
+
+    group = models.ForeignKey(
+        Group,
+        verbose_name='Guruh',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='users',  # now you can do group.users.all()
+    )
 
     objects = CustomUserManager()
 
