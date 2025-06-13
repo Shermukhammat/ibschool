@@ -35,12 +35,12 @@ class CustomUserManager(BaseUserManager):
 class MyUser(AbstractBaseUser, PermissionsMixin):
     tg_id = models.BigIntegerField(null=True)
     username = models.CharField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=255, blank=True, default='')
-    last_name = models.CharField(max_length=255, blank=True, default='')
+    first_name = models.CharField(max_length=255, blank=True, default='', verbose_name="Ism")
+    last_name = models.CharField(max_length=255, blank=True, default='', verbose_name="Familya")
     phone = models.CharField(max_length=20, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    avatar = models.ImageField(blank=True, null=True, upload_to = 'avatars/')
+    avatar = models.ImageField(blank=True, null=True, upload_to = 'avatars/', verbose_name="Avatar")
 
     objects = CustomUserManager()
 
@@ -48,7 +48,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"@{self.username}:  {self.full_name()}"
 
     class Meta:
         verbose_name = "Foydalanuvchi"

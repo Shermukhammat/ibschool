@@ -70,7 +70,7 @@ class CustomUserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'is_staff', 'is_superuser')
+    list_display = ('username', 'first_name', 'last_name', 'is_superuser')
     list_filter = ('is_staff', 'is_superuser')
     fieldsets = (
         (None,               {'fields': ('username', 'password', 'avatar', 'first_name', 'last_name')}),
@@ -80,7 +80,7 @@ class CustomUserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2'),
+            'fields': ('username', 'password1', 'password2', 'first_name', 'last_name', 'avatar'),
         }),
     )
     search_fields = ('username',)
