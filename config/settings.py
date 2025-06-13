@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-63gt2ox8c3zb1z(1$_c9*3yalm##nafx7c4s1jm1-dozwp328q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.180.195']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.237.194']
 
 # Application definition
 
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'main.MyUser'
-APPEND_SLASH = False
+APPEND_SLASH = True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -121,7 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-MEDIA_ROOT = BASE_DIR.joinpath('media')
+MEDIA_URL  = '/media/'  
+MEDIA_ROOT = BASE_DIR / 'media'
 STATICFILES_DIRS = [
     BASE_DIR.joinpath('static')
 ]

@@ -1,13 +1,19 @@
 from django.contrib import admin
 from .models import Group, Course, Lesson, Modul
+from main.models import MyUser
 
 
+
+class MyUserInline(admin.StackedInline):
+    model = MyUser
+    extra = 0
+    fields = ('username', 'first_name', 'last_name', 'phone', 'avatar')
+    show_change_link = True
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug':('name',)}
-
-    # filter_horizontal  = ('users',)
+    prepopulated_fields = {'slug': ('name',)}
+    inlines = [MyUserInline]
 
 
 class ModulInline(admin.TabularInline):

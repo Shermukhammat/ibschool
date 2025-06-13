@@ -12,6 +12,7 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
+
 class Course(models.Model):
     name = models.CharField(verbose_name='nomi', unique=True)
     slug = models.SlugField(unique=True)
@@ -24,12 +25,21 @@ class Course(models.Model):
         blank=True,
     )
 
+
     class Meta:
         verbose_name = "Kurs"
         verbose_name_plural = "Kurslar"
 
     def __str__(self):
         return self.name
+
+    def short_description(self) -> str:
+        if self.description:
+            if len(self.description) < 100:
+                return self.description
+            else:
+                return self.description[:95] + '...'
+        return ''
 
 class Modul(models.Model):
     name = models.CharField(verbose_name='nomi', max_length=255)

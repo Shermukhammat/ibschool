@@ -403,9 +403,13 @@
         <div class="course-grid">
           {% for course in courses %}
           <div class="course-card">
-            <img src="{{course.image.url}}" alt="{{course.title}}" />
+            {%if course.photo %}
+            <img src="{{course.photo.url}}" alt="{{course.title}}" />
+            {%else%}
+            <img src="{% static 'smoll_logo.png' %}" alt="{{course.title}}" />
+            {%endif%}
             <div class="course-content">
-              <h3>{{course.title}}</h3>
+              <h3>{{course.name}}</h3>
               <p class="course-description">{{course.short_description}}</p>
               <div class="course-info">
                 <svg
@@ -426,7 +430,7 @@
                 </svg>
                 Darslar soni: 32
               </div>
-              <a href="/free_course/{{course.slug}}" class="course-button"
+              <a href="/course/{{course.slug}}" class="course-button"
                 >Kursga o'tish</a
               >
             </div>

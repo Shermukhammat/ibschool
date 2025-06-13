@@ -14,7 +14,9 @@ def login_required_dec(func):
     return login_required(func, login_url='login')
 
 
-def main_page(request):
+def main_page(request: HttpRequest):
+    # if request.user.is_authenticated:
+    #     return HttpResponse("Buyerda dashboard bo'ladi")
     return render(request, 'main_page.html')
 
 
@@ -72,7 +74,6 @@ def post(request, year, month, day, slug):
     return HttpResponse('Maqola topilmadi')
 
 
-@method_decorator(login_required(login_url='login'), name='dispatch')
 class PostListView(ListView):
     queryset = Post.published_posts.all()
     context_object_name = 'posts'
