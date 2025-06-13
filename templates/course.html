@@ -1,0 +1,694 @@
+{% extends 'base.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %} {{course.name}} {% endblock %} {% block custom_style %}
+    <style>
+      /* Base Layout */
+      .content-block {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 6rem 1rem 4rem;
+        width: 92%;
+      }
+
+      /* Grid Layout */
+      .course-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 768px) {
+        .course-grid {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+
+        .course-sidebar {
+          width: 35%;
+          max-width: 400px;
+        }
+
+        .lessons-container {
+          width: 65%;
+        }
+      }
+
+      /* Course Sidebar */
+      .course-sidebar {
+        background-color: #fff;
+        border-radius: 10px;
+        border: 1px solid #e9e9e9;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        position: sticky;
+        top: 28px;
+        width: 100%;
+        padding: 1rem;
+      }
+
+      @media (max-width: 767px) {
+        .course-sidebar {
+          position: relative;
+          top: 0;
+          order: -1;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .course-sidebar {
+          padding: 0.5rem;
+        }
+      }
+
+      /* Video Container */
+      .video-container {
+        position: relative;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .video-thumbnail {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .video-container:hover .video-thumbnail {
+        transform: scale(1.03);
+      }
+
+      /* Play Overlay */
+      .play-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0.5)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+        z-index: 5;
+      }
+
+      .video-container:hover .play-overlay {
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.1),
+          rgba(0, 0, 0, 0.4)
+        );
+      }
+
+      /* Play Button */
+      .play-button {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(4px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+      }
+
+      .video-container:hover .play-button {
+        transform: scale(1.1);
+        background-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Video Info */
+      .video-info {
+        padding: 1rem 0;
+      }
+
+      .video-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .video-meta {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+      }
+
+      /* Buy Course Button */
+      .buy-course-btn {
+        display: block;
+        width: 100%;
+        background: rgb(0, 0, 0);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .buy-course-btn:hover {
+        background-color: rgb(29, 29, 29);
+      }
+
+      /* Lessons Container */
+      .lessons-container {
+        width: 100%;
+      }
+
+      /* Lesson Section */
+      .lesson-section {
+        margin-bottom: 1.5rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+      }
+
+      .section-header {
+        background: #f9fafb;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+      }
+
+      .section-header:hover {
+        background: #f1f3f5;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .section-toggle {
+        transition: transform 0.3s ease;
+      }
+
+      .section-toggle.collapsed {
+        transform: rotate(-90deg);
+      }
+
+      .lesson-list {
+        overflow: hidden;
+        transition: height 0.3s ease-out;
+      }
+
+      /* Lesson list styles */
+      .lesson-item {
+        padding: 0.5rem 1rem;
+        width: 100%;
+      }
+
+      .lesson-link {
+        display: flex;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+        justify-content: space-between;
+        text-decoration: none;
+      }
+
+      .lesson-link:hover {
+        background-color: #f3f4f6;
+      }
+
+      .lesson-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: black;
+      }
+
+      .lesson-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2.5rem;
+        width: 2.5rem;
+        background-color: #000;
+        color: white;
+        border-radius: 0.375rem;
+      }
+
+      .back-button-container {
+        padding: 1rem 0;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 92%;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        background-color: #f5f5f5;
+        color: #333;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        text-decoration: none;
+        margin-top: 2rem;
+      }
+
+      .back-button:hover {
+        background-color: #e8e8e8;
+        transform: translateY(-2px);
+      }
+
+      .back-button:active {
+        transform: translateY(0);
+      }
+
+      .back-button svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Media queries for responsive design */
+      @media (max-width: 768px) {
+        .back-button-container {
+          padding: 0.75rem 0;
+        }
+
+        .back-button {
+          padding: 0.5rem 0.75rem;
+          margin-top: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .back-button {
+          padding: 0.4rem 0.6rem;
+          font-size: 0.9rem;
+        }
+
+        .back-button svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+
+      /* Video Modal */
+      .fullscreen-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .fullscreen-video.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .video-wrapper {
+        position: relative;
+        width: 90%;
+        max-width: 1000px;
+      }
+
+      .close-button {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      .video-iframe {
+        aspect-ratio: 16/9;
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+      }
+
+      /* Lucide Icons */
+      .lucide {
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        vertical-align: middle;
+        width: 18px;
+        height: 18px;
+      }
+
+      @media (min-width: 768px) {
+        .lucide {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .lesson-status .lucide {
+        color: white;
+      }
+
+      .play-overlay .lucide {
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+      }
+
+      .lucide-play {
+        margin-left: 2px;
+      }
+
+      /* General Styles */
+      a {
+        text-decoration: none;
+      }
+    </style>
+    {%endblock%}
+  </head>
+  {% block content %}
+  <!-- Update your back button with these changes -->
+  <div class="back-button-container">
+    <a href="/courses" class="back-button">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M19 12H5"></path>
+        <path d="M12 19l-7-7 7-7"></path>
+      </svg>
+      Orqaga
+    </a>
+  </div>
+
+  <div class="content-block">
+    <div class="course-grid">
+      <!-- Course sidebar - will be at the top on mobile, side on desktop -->
+
+      <div class="course-sidebar">
+        <div class="video-container" id="videoThumbnail">
+          <div class="play-overlay">
+            {% if course.video%}
+            <div class="play-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-play w-4 h-4 md:w-6 md:h-6"
+              >
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+            {%endif%}
+          </div>
+          <img
+            class="video-thumbnail"
+            alt="{{course.name}}"
+            src="{%if course.photo%} {{course.photo.url}} {%else%} {%static 'smoll_logo.png'%} {%endif%}"
+          />
+        </div>
+        <div class="video-info">
+          <h3 class="video-title">{{course.name}}</h3>
+          <h4><p>{{course.description}}</p></h4>
+          
+          {% if course.pro %}
+          <div class="video-meta">
+            {% comment %}
+            <div class="video-instructor">
+              <img
+                class="instructor-avatar"
+                src="/path/to/instructor-avatar.jpg"
+                alt="Instructor"
+              />
+              <span>Azimjon Pulatov</span>
+            </div>
+            {% endcomment %}
+          </div>
+          <a href="#" class="buy-course-btn">Kursni sotib olish</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Lessons container - will be below sidebar on mobile, side on desktop -->
+      <div class="lessons-container">
+        {% for modul in course.moduls.all %}
+        <div class="lesson-section">
+          <div class="section-header" onclick="toggleSection(this)">
+            <h3 class="section-title">{{modul.name}}</h3>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="section-toggle collapsed"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="lesson-list">
+            <div class="lesson-list-inner">
+              {% for lesson in modul.lessons.all%}
+              <div class="lesson-item">
+                <a class="lesson-link" href="{{lesson.abs_url}}">
+                  <div class="lesson-info">
+                    <span class="lesson-status">
+                      {% if 1 == 2 %}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        class="lucide lucide-play"
+                      >
+                        <rect
+                          width="18"
+                          height="11"
+                          x="3"
+                          y="11"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                      {% elif 1 == 1 %}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        class="lucide lucide-play"
+                      >
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      {% elif 1 == 1 %}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        class="lucide lucide-play"
+                      >
+                        <path d="M18 6 7 17l-5-5"></path>
+                        <path d="m22 10-7.5 7.5L13 16"></path>
+                      </svg>
+                      {% endif %}
+                    </span>
+                    {{lesson.name}}
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %} {%if not course.moduls.all%}
+        <h2
+          style="
+            text-align: center;
+            color: #555;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+          "
+        >
+          Hozirda birortaham dars yo'q
+        </h2>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+
+  <!-- Video modal remains the same -->
+  <div class="fullscreen-video" id="videoModal">
+    <div class="video-wrapper">
+      <button class="close-button" id="closeVideo">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <iframe
+        id="videoIframe"
+        class="video-iframe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const videoThumbnail = document.getElementById("videoThumbnail");
+      const videoModal = document.getElementById("videoModal");
+      const videoIframe = document.getElementById("videoIframe");
+      const closeVideo = document.getElementById("closeVideo");
+
+      // Initialize all lessons to be expanded by default
+      const lessonLists = document.querySelectorAll(".lesson-list");
+      lessonLists.forEach((list) => {
+        const listInner = list.querySelector(".lesson-list-inner");
+        if (listInner) {
+          list.style.height = "0px";
+        }
+      });
+
+      // Assuming course.embedded_video contains a YouTube video ID or URL
+      // Example: "https://www.youtube.com/embed/VIDEO_ID" or just "VIDEO_ID"
+      const youtubeEmbedUrl = "{{course.video}}";
+
+      // Function to extract YouTube ID from various URL formats
+      function getYouTubeID(url) {
+        // If it's already just an ID
+        if (url.length < 30 && !url.includes("/")) {
+          return url;
+        }
+
+        // If it's already an embed URL
+        if (url.includes("youtube.com/embed/")) {
+          return url.split("youtube.com/embed/")[1].split("?")[0];
+        }
+
+        // If it's a standard YouTube URL
+        const regExp =
+          /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return match && match[2].length === 11 ? match[2] : null;
+      }
+
+      // Open video modal when clicking the thumbnail
+      videoThumbnail.addEventListener("click", function () {
+        const videoID = getYouTubeID(youtubeEmbedUrl);
+
+        if (videoID) {
+          // Set proper YouTube embed URL with autoplay
+          videoIframe.src = `https://www.youtube.com/embed/${videoID}`;
+          videoModal.classList.add("active");
+          document.body.style.overflow = "hidden"; // Prevent scrolling
+        } else {
+          console.error("Invalid YouTube URL or ID");
+        }
+      });
+
+      // Close video modal when clicking the X button
+      closeVideo.addEventListener("click", function () {
+        videoModal.classList.remove("active");
+        videoIframe.src = ""; // Remove the source to stop the video
+        document.body.style.overflow = ""; // Re-enable scrolling
+      });
+
+      // Close video modal when clicking outside the video
+      videoModal.addEventListener("click", function (e) {
+        if (e.target === videoModal) {
+          videoModal.classList.remove("active");
+          videoIframe.src = ""; // Remove the source to stop the video
+          document.body.style.overflow = ""; // Re-enable scrolling
+        }
+      });
+    });
+
+    // Improved toggle section function
+    function toggleSection(header) {
+      const lessonList = header.nextElementSibling;
+      const toggle = header.querySelector(".section-toggle");
+      const listInner = lessonList.querySelector(".lesson-list-inner");
+
+      toggle.classList.toggle("collapsed");
+
+      if (lessonList.style.height === "0px") {
+        // Expand
+        lessonList.style.height = listInner.offsetHeight + "px";
+      } else {
+        // Collapse
+        lessonList.style.height = "0px";
+      }
+    }
+
+    // Handle window resize to adjust heights
+    window.addEventListener("resize", function () {
+      const openLists = document.querySelectorAll(".lesson-list");
+      openLists.forEach((list) => {
+        if (list.style.height !== "0px") {
+          const listInner = list.querySelector(".lesson-list-inner");
+          if (listInner) {
+            list.style.height = listInner.offsetHeight + "px";
+          }
+        }
+      });
+    });
+  </script>
+  {% endblock %}
+</html>

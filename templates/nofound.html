@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Sahifa topilmadi{% endblock %}
+
+{% block custom_style %}
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+    min-height: calc(100vh - 70px);
+}
+
+.error-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 1rem 0;
+    color: #333;
+}
+
+.error-message {
+    font-size: 1.2rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.error-image {
+    max-width: 40%;
+    height: auto;
+    margin: 2rem 0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.home-button {
+    padding: 0.8rem 2rem;
+    background-color: rgb(40, 40, 40);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.home-button:hover {
+    background-color: rgb(0, 0, 0);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 65, 63, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .error-title {
+        font-size: 1.5rem;
+    }
+
+    .error-message {
+        font-size: 1rem;
+    }
+    
+    .error-image {
+        max-width: 80%;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container not-found-container">
+    <img src="{% static '404.jpg' %}" class="error-image" alt="404 Error">
+    <h1 class="error-title">Sahifa topilmadi</h1>
+    <p class="error-message">Siz izlayotgan sahifa mavjud emas yoki boshqa manzilga ko'chirilgan. Quydagi tugma orqali bosh menyuga qayting</p>
+    <a href="/" class="home-button">Bosh sahifaga qaytish</a>
+</div>
+{% endblock %}

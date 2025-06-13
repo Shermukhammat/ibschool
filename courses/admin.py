@@ -40,7 +40,8 @@ class LessonInline(admin.TabularInline):
 @admin.register(Modul)
 class ModulAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}
-
+    list_filter = ('course',)
+    # fields = ('name', 'course',)
     inlines = [LessonInline]
 
 @admin.register(Lesson)
