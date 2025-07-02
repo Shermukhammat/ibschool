@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from django_quill.fields import QuillField
 
 class Group(models.Model):
     name = models.CharField(verbose_name='nomi', unique=True)
@@ -79,7 +80,7 @@ class Modul(models.Model):
 class Lesson(models.Model):
     name        = models.CharField(verbose_name='nomi',   max_length=255)
     slug        = models.SlugField(max_length=255)
-    description = models.TextField(blank=True)
+    description = QuillField(verbose_name='Dars kontenti')
     modul       = models.ForeignKey(
         'Modul',
         verbose_name='Modul',

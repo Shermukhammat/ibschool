@@ -21,8 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ["SECRET_KEY"]
-
+# SECRET_KEY = os.getenv('SECRET_KEY')
+from vars import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -133,30 +133,3 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# QUILL_CONFIGS = {
-#     'default': {
-#         'theme': 'snow',
-#         'modules': {
-#             # enable syntax highlighting and formula support
-#             'syntax': True,
-#             'toolbar': [
-#                 ['bold', 'italic', 'underline', 'strike'],
-#                 ['blockquote', 'code-block'],
-#                 [{'header': 1}, {'header': 2}],
-#                 [{'list': 'ordered'}, {'list': 'bullet'}],
-#                 [{'script': 'sub'}, {'script': 'super'}],
-#                 [{'indent': '-1'}, {'indent': '+1'}],
-#                 [{'direction': 'rtl'}],
-#                 [{'size': ['small', False, 'large', 'huge']}],
-#                 [{'header': [1, 2, 3, 4, 5, 6, False]}],
-#                 [{'color': []}, {'background': []}],
-#                 [{'font': []}],
-#                 [{'align': []}],
-#                 ['link', 'image', 'video'],
-#                 ['clean'],
-#                 ['formula'],    # ← Formula (KaTeX) button
-#             ]
-#         }
-#     }
-# }

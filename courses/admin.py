@@ -18,6 +18,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 class ModulInline(admin.TabularInline):
     model = Modul
+    fields = ['name', 'slug']
     extra = 0
     show_change_link = True 
     prepopulated_fields = {'slug':('name',)}
@@ -35,6 +36,7 @@ class LessonInline(admin.TabularInline):
     model = Lesson
     extra = 0
     show_change_link = True
+    fields = ['name', 'slug']
     prepopulated_fields = {'slug':('name',)}
 
 @admin.register(Modul)
